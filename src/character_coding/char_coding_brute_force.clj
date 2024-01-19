@@ -26,7 +26,19 @@
             (mapv (fn [char freq value]
                     [char freq value]) letter freq permutation)) (comb/permutations (range (count letter))))))
 
+(defn calculate-row-memory [row]
+  (reduce (fn [current,column]
+            (+ current
+               (* (second column)
+                  (count (Integer/toBinaryString (last column)))))) 0 row)
+  )
+(defn calculate-fitness [letters]
 
+  (reduce (fn [min-memory,best-individual]
+            (let [current-memory ()]))
+          {:min-memory Integer/MAX_VALUE
+           :best-individuals []
+           } (get-all-combinations-complete letters)))
 
 
 
