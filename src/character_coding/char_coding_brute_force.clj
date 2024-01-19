@@ -19,6 +19,14 @@
             (mapv (fn [char value]
                     [char value]) only-letter permutation)) (comb/permutations (range (count only-letter))))))
 
+(defn get-all-combinations-complete [letters]
+  (let [letter (map first letters)
+        freq (map second letters)]
+    (mapv (fn [permutation]
+            (mapv (fn [char freq value]
+                    [char freq value]) letter freq permutation)) (comb/permutations (range (count letter))))))
+
+
 
 
 
