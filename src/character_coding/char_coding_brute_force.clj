@@ -25,8 +25,14 @@
     (mapv (fn [permutation]
             (mapv (fn [char freq value]
                     [char freq value]) letter freq permutation)) (comb/permutations (range (count letter))))))
+;;
+;; For this algorithm, we will define a fitness function,
+;; which is to find the smallest size of memory occupied by the given letters.
+;; We will observe the frequency of each letter and construct the algorithm in such a way that
+;; we need to assign a smaller binary value to characters that appear more frequently.
 
 (defn calculate-row-memory [row]
+  "Calculating memory size for one row "
   (reduce (fn [current,column]
             (+ current
                (* (second column)
@@ -34,11 +40,38 @@
   )
 (defn calculate-fitness [letters]
 
-  (reduce (fn [min-memory,best-individual]
-            (let [current-memory ()]))
+  (reduce (fn [result, column]
+            (let [current-memory (calculate-row-memory column)]
+              (println "iteration: " (get result :i))
+              (println "Best memory-size: " (get result :min-memory))
+              (println "Current memory size: " current-memory)
+              (if (< current-memory (get result :min-memory))
+                (assoc result :min-memory current-memory)
+                (assoc result :best-individuals column))
+              (assoc result :i (inc (get result :i)))
+              (println "----------------------------------")))
           {:min-memory Integer/MAX_VALUE
            :best-individuals []
+           :i 1
            } (get-all-combinations-complete letters)))
+;----------------------------
+(defn calculate-fitness-1 [letters]
+  (reduce (fn [result column]
+            (let [current-memory (calculate-row-memory column)
+                  updated-result (if (< current-memory (get result :min-memory))
+                                   (assoc result :min-memory current-memory :best-individuals column)
+                                   result)]
+              (println "iteration: " (:i updated-result))
+              (println "Best memory-size: " (:min-memory updated-result))
+              (println "Current memory size: " current-memory)
+              (println "----------------------------------")
+              (assoc updated-result :i (inc (:i updated-result)))))
+          {:min-memory Integer/MAX_VALUE
+           :best-individuals []
+           :i 1
+           } (get-all-combinations-complete letters)))
+;-------------------------------
+
 
 
 
