@@ -1,5 +1,6 @@
 (ns character-coding.char-coding-brute-force
-  (:require [clojure.math.combinatorics :as comb]))
+  (:require [clojure.math.combinatorics :as comb]
+            [criterium.core :refer [quick-bench]]))
 
 ; Add some input character and their frequences
 (def letters [['A' 5]
@@ -55,7 +56,7 @@
            :i 1
            } (get-all-combinations-complete letters)))
 ;----------------------------
-(defn calculate-fitness-1 [letters]
+(defn calculate-fitness-with-println [letters]
   (reduce (fn [result column]
             (let [current-memory (calculate-row-memory column)
                   updated-result (if (< current-memory (get result :min-memory))
@@ -71,9 +72,21 @@
            :i 1
            } (get-all-combinations-complete letters)))
 ;-------------------------------
+(defn calculate-fitness [letters]
+  (reduce (fn [result column]
+            (let [current-memory (calculate-row-memory column)
+                  updated-result (if (< current-memory (get result :min-memory))
+                                   (assoc result :min-memory current-memory :best-individuals column)
+                                   result)]
+              (assoc updated-result :i (inc (:i updated-result)))))
+          {:min-memory Integer/MAX_VALUE
+           :best-individuals []
+           :i 1
+           } (get-all-combinations-complete letters)))
 
 
+;-------------------------------------------
+;; Optimized function
 
-
-
-
+;; Measures the computation time
+(quick-bench (calculate-fitness letters))
