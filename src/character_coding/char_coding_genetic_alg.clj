@@ -44,10 +44,20 @@
   (into {} array)
   )
 
+; Initialization of population
+(defn generate-chromosome
+  [chromosome-type]
+  (let [max-number-of-bytes (get-max-number-of-bytes (count chromosome-type))]
+    (mapv (fn [gene] (conj gene (inc (rand-int max-number-of-bytes))))  chromosome-type)
+  ))
 (defn create-initial-population
   "Function generates initial population
-   Input: size of population, length of chromosome
+   Input: size of population, structure of chromosome
    Output: Randomly generated population"
-  [population-size,chromosome-length])
-
+  [population-size,chromosome-type]
+  (let [population (transient [])]
+    (dotimes [_ population-size]
+      (let [current-individual (generate-chromosome chromosome-type)]
+        (conj! population current-individual)))
+    (persistent! population)))
 
