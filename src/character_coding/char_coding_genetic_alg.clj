@@ -61,3 +61,45 @@
         (conj! population current-individual)))
     (persistent! population)))
 
+(defn generate-chromosome-1
+  [chromosome-size max-number-bytes]
+  (vec (repeatedly chromosome-size #(inc (rand-int max-number-bytes)))))
+
+
+(defn create-initial-population-1
+  [population-size, chromosome-size]
+  (let [max-number-of-bytes (get-max-number-of-bytes chromosome-size)]
+    (vec (repeatedly population-size (fn [] (generate-chromosome-1 chromosome-size max-number-of-bytes))))))
+
+
+;;The next step is to calculate the adaptation measure.
+;; It is obtained by calculating the fitness function for each individual,
+;; and then observing whether the individual can be in the population
+;;
+;;We will observe the correctness of the individual in the number of coding combinations.
+;; For example, only two characters can be replaced with one bit value, because a character can
+;; take the value 0 or 1. If more than 2 genes containing the value 1 appear in an individual,
+;; we will declare it incorrect. Based on this logic,
+;; we define the condition of non-acceptance of an individual:
+;;
+;; count(c)<=2^c
+;;
+;; where c is number of bytes to represent character
+;;
+;; In order to optimize the solution, we will sort each gene of each individual in ascending order
+
+(defn calculate-individual-fitness
+  "Calculating fitness function based on count of bytes for one individual"
+  [individual letters]
+  (let [freq (frequencies individual)]
+    (if (every? #(<= (val %) (Math/pow 2 (key %))) freq)
+      (reduce + (map * individual (vec (map second letters))))
+      0)))
+
+(defn survival
+  [population letters]
+  (filter #(< 0 (calculate-individual-fitness % letters)) population))
+
+
+
+
