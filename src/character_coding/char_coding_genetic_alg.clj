@@ -100,6 +100,17 @@
   [population letters]
   (filter #(< 0 (calculate-individual-fitness % letters)) population))
 
+;;Now parents should be chosen based on their adaptability.
+;; Individuals with better traits are more likely to live longer,
+;; and therefore reproduce. In my case, the individual has better attributes
+;; if it is represented with less memory
+;;
+;; The technique chosen by parents is the roulette technique.
+;; Individuals with better fitness function will have a higher probability of being Parents,
+;; but individuals with lower fitness function also have a chance to be parents.
+
+
+
 
 
 
