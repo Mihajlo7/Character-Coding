@@ -109,8 +109,24 @@
 ;; Individuals with better fitness function will have a higher probability of being Parents,
 ;; but individuals with lower fitness function also have a chance to be parents.
 
+(defn calculate-individual-prob
+  [individual letters total]
+  (let [inv (map #(/ 1 %) )]))
+(defn get-probabilities
+  [population letters]
+  (let [total (reduce (fn [total ind] (+ total (calculate-individual-fitness ind letters)) ) 0 population)]
+    (mapv (fn [ind] (conj ind (calculate-individual-prob ind letters total))) population)))
 
+(defn calculate-fitness [ind letters]
+  (double (/ 1 (calculate-individual-fitness ind letters))))
 
-
+(defn set-probabilities
+  [population letters]
+  (let [total (reduce (fn [total ind] (+ total (calculate-fitness ind letters))) 0 population)]
+    (mapv (fn [ind]
+            (conj ind
+                  (calculate-individual-fitness ind letters)
+                  (calculate-fitness ind letters)
+                  (double (/ (calculate-fitness ind letters) total)))) population)))
 
 
