@@ -109,24 +109,59 @@
 ;; Individuals with better fitness function will have a higher probability of being Parents,
 ;; but individuals with lower fitness function also have a chance to be parents.
 
-(defn calculate-individual-prob
-  [individual letters total]
-  (let [inv (map #(/ 1 %) )]))
-(defn get-probabilities
-  [population letters]
-  (let [total (reduce (fn [total ind] (+ total (calculate-individual-fitness ind letters)) ) 0 population)]
-    (mapv (fn [ind] (conj ind (calculate-individual-prob ind letters total))) population)))
-
 (defn calculate-fitness [ind letters]
   (double (/ 1 (calculate-individual-fitness ind letters))))
 
+;;Za sada gledamo ovo
+(defn probabilities
+  [population letters]
+  (let [total (reduce (fn [total ind] (+ total (calculate-fitness ind letters))) 0 population)]
+    (reduce (fn [result ind]
+              (conj result (double
+                             (/
+                               (calculate-fitness ind letters)
+                               total)))) [] population)))
+
+;returns concat chromozome and probabilities
 (defn set-probabilities
   [population letters]
   (let [total (reduce (fn [total ind] (+ total (calculate-fitness ind letters))) 0 population)]
     (mapv (fn [ind]
             (conj ind
-                  (calculate-individual-fitness ind letters)
-                  (calculate-fitness ind letters)
+                  ;(calculate-individual-fitness ind letters)
+                  ;(calculate-fitness ind letters)
                   (double (/ (calculate-fitness ind letters) total)))) population)))
 
+(defn probability
+  [individual letters total]
+  (double (/ (calculate-fitness individual letters) total)))
 
+;///////////////////////
+(defn cumulative-values [niz]
+  (let [cumulative (reductions + 0 niz)]
+    (map vector cumulative (rest cumulative))))
+
+(defn cumulative-probabilities
+  [population letters]
+  (cumulative-values (probabilities population letters)))
+
+(defn get-index-selected
+  [number cumulative-probs]
+  (loop [i 0]
+    (if (< i (count cumulative-probs))
+      (if (and (< (first (nth cumulative-probs i)) number)
+               (<= number (second (nth cumulative-probs i))))
+        i
+        (recur (inc i)))
+      nil)))
+
+(defn roulette-wheel-selection
+  [num-of-selection population letters]
+  (let [cumulative-probs (cumulative-probabilities population letters)]
+    (loop [i 0
+           result []]
+      (if (< i num-of-selection)
+        (let [roulette-num (rand)
+              selected-ind (nth population (get-index-selected roulette-num cumulative-probs))]
+          (recur (inc i) (conj result selected-ind)))
+        result))))
