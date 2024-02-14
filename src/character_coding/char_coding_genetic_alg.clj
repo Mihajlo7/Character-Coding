@@ -45,31 +45,16 @@
   )
 
 ; Initialization of population
-(defn generate-chromosome
-  [chromosome-type]
-  (let [max-number-of-bytes (get-max-number-of-bytes (count chromosome-type))]
-    (mapv (fn [gene] (conj gene (inc (rand-int max-number-of-bytes))))  chromosome-type)
-  ))
-(defn create-initial-population
-  "Function generates initial population
-   Input: size of population, structure of chromosome
-   Output: Randomly generated population"
-  [population-size,chromosome-type]
-  (let [population (transient [])]
-    (dotimes [_ population-size]
-      (let [current-individual (generate-chromosome chromosome-type)]
-        (conj! population current-individual)))
-    (persistent! population)))
 
-(defn generate-chromosome-1
+(defn generate-chromosome
   [chromosome-size max-number-bytes]
   (vec (repeatedly chromosome-size #(inc (rand-int max-number-bytes)))))
 
 
-(defn create-initial-population-1
+(defn create-initial-population
   [population-size, chromosome-size]
   (let [max-number-of-bytes (get-max-number-of-bytes chromosome-size)]
-    (vec (repeatedly population-size (fn [] (generate-chromosome-1 chromosome-size max-number-of-bytes))))))
+    (vec (repeatedly population-size (fn [] (generate-chromosome chromosome-size max-number-of-bytes))))))
 
 
 ;;The next step is to calculate the adaptation measure.
