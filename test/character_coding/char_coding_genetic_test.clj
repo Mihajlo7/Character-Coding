@@ -29,4 +29,4 @@
       (create-initial-population 1 0)=> [[]]
       (create-initial-population 2 0)=> [[] []]
       (create-initial-population 1 1)=> [[1]]
-      (create-initial-population 2 1)=> [[1] [1]])
+      (create-initial-population 2 1)=> [[1]])

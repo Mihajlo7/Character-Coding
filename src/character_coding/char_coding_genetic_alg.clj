@@ -150,3 +150,42 @@
               selected-ind (nth population (get-index-selected roulette-num cumulative-probs))]
           (recur (inc i) (conj result selected-ind)))
         result))))
+
+;; Crossover
+;;In this example, I will use uniform crossover,
+;; because in this way to increase the variety of solutions and to try to avoid the problem of the best local solution
+
+(defn generate-xover-point
+  [chromosome-length]
+  (let [first (inc (rand-int chromosome-length))
+        second (loop [num (inc (rand-int (dec chromosome-length)))]
+                 (if (= num first)
+                   (recur (inc (rand-int (dec chromosome-length))))
+                   num))]
+    (sort [first second])))
+
+(defn prepare-for-crossover
+  [ind points]
+  [(subvec ind 0 (first points))
+   (subvec ind (first points) (second points))
+   (subvec ind (second points) (count ind))])
+(defn two-point-crossover
+  [parent-1 parent-2 points]
+  (let [par-1 (prepare-for-crossover parent-1 points)
+        par-2 (prepare-for-crossover parent-2 points)]
+    [(vec (flatten [(first par-1) (second par-2) (last par-1)]))
+     (vec (flatten [(first par-2) (second par-1) (last par-2)]))]))
+
+(defn reproduce-children
+  [population chromosome-length]
+  (loop [i 0
+         children []
+         points (generate-xover-point chromosome-length)]
+    (if (< i (dec (count population)))
+      (recur (inc i)
+             (let [res (two-point-crossover (nth population i) (nth population (inc i)) points)]
+               (conj children (first res) (second res)))
+             (generate-xover-point chromosome-length))children)))
+(defn merge-parent-and-children
+  [population children]
+  (concat population children))
