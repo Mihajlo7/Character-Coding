@@ -189,3 +189,25 @@
 (defn merge-parent-and-children
   [population children]
   (concat population children))
+
+(defn generate-mutation-point
+  [chromosome-length]
+  (let [first (inc (rand-int chromosome-length))
+        second (loop [num (inc (rand-int chromosome-length))]
+                 (if (= num first)
+                   (recur (inc (rand-int chromosome-length)))
+                   num))]
+    (sort [first second])))
+(defn inversion-mutation
+  [ind points]
+  (let [first-part (take (dec (first points)) ind)
+        second-part (subvec ind (dec (first points)) (second points))
+        last-part (drop (second points) ind)]
+    (concat first-part (flatten (reverse second-part)) last-part)))
+
+(defn mutate
+  [population chromosome-length mutation-rate]
+  (map (fn [individual]
+         (if (<= (rand) mutation-rate)
+           (vec (inversion-mutation individual (generate-mutation-point chromosome-length)))
+           individual))  population))
