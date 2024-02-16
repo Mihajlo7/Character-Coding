@@ -88,5 +88,30 @@
 ;-------------------------------------------
 ;; Optimized function
 
-;; Measures the computation time
-(quick-bench (calculate-fitness letters))
+;;--------- NEW IMPLEMENTATION ------------
+
+(defn generate-all-comb
+  [letters]
+  (vec (comb/permutations (range (count letters)))))
+
+(defn calculate-individual-fitness
+  [individual letters]
+  (loop [sum 0
+         i 0]
+    (if (< i (count individual))
+      (recur (+ sum (* (count (Integer/toBinaryString (nth individual i)))
+                       (second (nth letters i)))) (inc i))
+      sum)))
+
+(defn calculate-optimal-individual
+  [combinations letters]
+  (loop [iteration 0
+         best-individual []
+         best-memory-size Integer/MAX_VALUE]
+    (if (< iteration (count combinations))
+      (let [individual (nth combinations iteration)
+            current-memory (calculate-individual-fitness individual letters)]
+        (if (<= current-memory best-memory-size)
+          (recur (inc iteration) individual current-memory )
+          (recur (inc iteration) best-individual best-memory-size))
+        )best-individual)))

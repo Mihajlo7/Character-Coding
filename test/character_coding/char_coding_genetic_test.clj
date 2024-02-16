@@ -7,6 +7,8 @@
                    ['C' 6]
                    ['D' 3]])
 (def letters-test-count (count letters-test))
+
+(def individual [1 2 3 2])
 (fact "Testing count numbers of bytes to represent character. Input is length of characters"
       (get-max-number-of-bytes 5)=> 3
       (get-max-number-of-bytes 1)=> 1
@@ -29,4 +31,26 @@
       (create-initial-population 1 0)=> [[]]
       (create-initial-population 2 0)=> [[] []]
       (create-initial-population 1 1)=> [[1]]
-      (create-initial-population 2 1)=> [[1]])
+      (create-initial-population 2 1)=> [[1] [1]])
+
+(facts "Testing generate mutation points"
+      (let [chromosome-length 10
+            points (generate-mutation-point chromosome-length)]
+            (fact "length of points"
+                  (count points)=> 2)
+            (fact "All numbers in 1 to chromosome and distinct"
+                  (every? #(and (<= 1 % chromosome-length))points) => true
+                  (distinct points)=> points)
+            (fact "Sorting"
+                  (apply < points)=> true)))
+
+(facts "Testing inversion mutation"
+       (let [individual [1 2 3 2]]
+             (fact "Test case 1"
+                   (inversion-mutation individual [2 3])=> '(1 3 2 2))
+             (fact "Test case 2"
+                   (inversion-mutation individual [1 4])=> '(2 3 2 1))
+             (fact "Test case 3"
+                   (inversion-mutation individual [1 2])=> '(2 1 3 2))
+             (fact "Testing with 0"
+                   (inversion-mutation individual [0 1])=> (throws java.lang.IndexOutOfBoundsException))))
