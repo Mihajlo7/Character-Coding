@@ -211,3 +211,45 @@
          (if (<= (rand) mutation-rate)
            (vec (inversion-mutation individual (generate-mutation-point chromosome-length)))
            individual))  population))
+(defn calculate-population-fitness
+  [population letters]
+  (loop [i 0
+         best-fitness Integer/MAX_VALUE]
+    (if (< i (count population))
+      (let [individual (nth population i)
+            current-fitness (calculate-individual-fitness individual letters)]
+        (if (<= current-fitness best-fitness)
+          (recur (inc i) current-fitness)
+          (recur (inc i) best-fitness)))
+      best-fitness)))
+(defn calculate-optimal-individual-genetic
+  [initial-population-size number-of-generations letters]
+
+  (let [chromosome-size (count letters)
+        initial-population (create-initial-population initial-population-size chromosome-size)
+        survival-population (survival initial-population letters)]
+    ;(println "Initial population size: " initial-population-size)
+    ;(println "Survived population size: " (count survival-population))
+    ;(println "Percentage of survivors: " (/ (* (count survival-population) 100) initial-population-size) "%")
+    ;(println "-----------------------------")
+    (loop [iteration 1
+           global-best Integer/MAX_VALUE
+           population survival-population]
+      (if (<= iteration number-of-generations)
+        (let [current-best (calculate-population-fitness population letters)]
+          ;(println "Generation: " iteration)
+          ;(println "Global best fitness: " global-best)
+          ;(println "Current best fitness: "current-best)
+          ;(println "****")
+          (let [parents (roulette-wheel-selection 100 population letters)
+                children (reproduce-children parents chromosome-size)
+                survival-children (survival children letters)
+                new-population (merge-parent-and-children population survival-children)]
+            ;(println "Number of children: " (count children))
+            ;(println "Number of survived children: " (count survival-children))
+            ;(println "----------------\n")
+            (if (<= current-best global-best)
+              (recur (inc iteration) current-best new-population)
+              (recur (inc iteration) global-best  new-population)))
+          )
+        global-best))))
