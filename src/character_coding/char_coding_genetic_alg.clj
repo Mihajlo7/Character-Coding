@@ -84,7 +84,7 @@
 ;;
 ;; In order to optimize the solution, we will sort each gene of each individual in ascending order
 
-(defn calculate-individual-fitness
+(defn calculate-memory
   "Calculating fitness function based on count of bytes for one individual"
   [individual letters]
   (let [freq (frequencies individual)]
@@ -95,7 +95,7 @@
 
 (defn survival
   [population letters]
-  (filter #(< 0 (calculate-individual-fitness % letters)) population))
+  (filter #(< 0 (calculate-memory % letters)) population))
 
 ;;Now parents should be chosen based on their adaptability.
 ;; Individuals with better traits are more likely to live longer,
@@ -107,12 +107,16 @@
 ;; but individuals with lower fitness function also have a chance to be parents.
 
 (defn calculate-fitness [ind letters]
-  (double (/ 1 (calculate-individual-fitness ind letters))))
+  (double (/ 1 (calculate-memory ind letters))))
+
+
+
 
 ;;Za sada gledamo ovo
 (defn probabilities
   [population letters]
   (let [total (reduce (fn [total ind] (+ total (calculate-fitness ind letters))) 0 population)]
+    ;(println total)
     (reduce (fn [result ind]
               (conj result (double
                              (/
@@ -128,6 +132,7 @@
                   ;(calculate-individual-fitness ind letters)
                   ;(calculate-fitness ind letters)
                   (double (/ (calculate-fitness ind letters) total)))) population)))
+
 
 (defn probability
   [individual letters total]
@@ -156,13 +161,61 @@
   [num-of-selection population letters]
   (let [cumulative-probs (cumulative-probabilities population letters)]
     (loop [i 0
-           result []]
+           result []
+           roulette-num (rand)]
       (if (< i num-of-selection)
-        (let [roulette-num (rand)
-              selected-ind (nth population (get-index-selected roulette-num cumulative-probs))]
-          (recur (inc i) (conj result selected-ind)))
+        (let [selected-ind (nth population (get-index-selected roulette-num cumulative-probs))]
+          (recur (inc i) (conj result selected-ind) (rand)))
         result))))
 
+(defn sum-of-probabilities
+  [population letters size]
+  (loop [i 0
+         result 0]
+    (if (< i size)
+      (recur (inc i) (+ result (calculate-fitness (nth population i) letters)))
+      result)))
+(defn cumulative-values-optimised
+  [population letters]
+  (let [size (count population)
+        total (sum-of-probabilities population letters size)]
+    (loop [i 0
+           result []]
+      (if (< i size)
+        (let [individual (nth population i)
+              probability (double (/ (calculate-fitness individual letters) total))]
+          (if (= i 0)
+            (recur (inc i)(conj result (conj individual probability 0 probability)))
+            (recur (inc i)
+                   (conj result
+                         (conj individual probability (last (nth result (dec i))) (+ probability (last (nth result (dec i)))))))))
+        result))))
+
+(defn binary-search-selection
+  [rand-number population]
+  (loop [low 0
+         high (dec (count population))]
+    (if (<= low high)
+      (let [mid (quot (+ low high) 2)
+            mid-value (nth population mid)]
+        (if (<= rand-number (last mid-value))
+          (if (> rand-number (last (butlast mid-value)))
+            mid-value
+            (recur low (- mid 1)))
+          (recur (+ mid 1) high)))
+      (last population))))
+(defn roulette-wheel-selection-optimised
+  [num-of-selection population letters]
+  (let [population-with-prob (cumulative-values-optimised population letters)
+        size (count letters)]
+    (loop [i 0
+           result []
+           generated-number (rand)]
+      (if (< i num-of-selection)
+        (recur (inc i)
+               (conj result (vec (take size (binary-search-selection generated-number population-with-prob))))
+               (rand))
+        result))))
 ;; Crossover
 ;;In this example, I will use uniform crossover,
 ;; because in this way to increase the variety of solutions and to try to avoid the problem of the best local solution
@@ -229,7 +282,7 @@
          best-fitness Integer/MAX_VALUE]
     (if (< i (count population))
       (let [individual (nth population i)
-            current-fitness (calculate-individual-fitness individual letters)]
+            current-fitness (calculate-memory individual letters)]
         (if (<= current-fitness best-fitness)
           (recur (inc i) current-fitness)
           (recur (inc i) best-fitness)))
@@ -271,8 +324,5 @@
   [population letters]
   (merge-parent-and-children population
                              (survival (reproduce-children
-                                         (roulette-wheel-selection 100 population letters)
+                                         (roulette-wheel-selection-optimised 100 population letters)
                                          (count letters)) letters)))
-
-(defn ga-optimized
-  [initial-population-size number-of-generations letters])

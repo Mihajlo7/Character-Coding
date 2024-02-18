@@ -107,3 +107,10 @@
 ;   Execution time lower quantile : 1,836094 sec ( 2,5%)
 ;   Execution time upper quantile : 2,439353 sec (97,5%)
 ;                   Overhead used : 5,831894 ns
+;; Optimised selection
+;;Evaluation count : 30 in 6 samples of 5 calls.
+;             Execution time mean : 25,545321 ms
+;    Execution time std-deviation : 1,812911 ms
+;   Execution time lower quantile : 23,278195 ms ( 2,5%)
+;   Execution time upper quantile : 27,775337 ms (97,5%)
+;                   Overhead used : 5,575167 ns
