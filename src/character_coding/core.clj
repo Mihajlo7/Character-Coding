@@ -90,3 +90,20 @@
 ;   Execution time lower quantile : 7,230460 sec ( 2,5%)
 ;   Execution time upper quantile : 7,774082 sec (97,5%)
 ;                   Overhead used : 5,580619 ns
+
+;;; For 25 gens
+; (quick-bench (genetic-alg/create-new-generation s-population letters))
+;Evaluation count : 6 in 6 samples of 1 calls.
+;             Execution time mean : 2,170621 sec
+;    Execution time std-deviation : 107,352769 ms
+;   Execution time lower quantile : 2,035561 sec ( 2,5%)
+;   Execution time upper quantile : 2,297822 sec (97,5%)
+;                   Overhead used : 5,831894 ns
+
+;; (quick-bench (genetic-alg/roulette-wheel-selection 100 s-population letters))
+;Evaluation count : 6 in 6 samples of 1 calls.
+;             Execution time mean : 2,167718 sec
+;    Execution time std-deviation : 236,465343 ms
+;   Execution time lower quantile : 1,836094 sec ( 2,5%)
+;   Execution time upper quantile : 2,439353 sec (97,5%)
+;                   Overhead used : 5,831894 ns
