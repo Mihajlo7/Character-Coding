@@ -56,6 +56,17 @@
   (let [max-number-of-bytes (get-max-number-of-bytes chromosome-size)]
     (vec (repeatedly population-size (fn [] (generate-chromosome chromosome-size max-number-of-bytes))))))
 
+(defn generate-chromosome-optimised
+  [chromosome-size max-number-bytes]
+  (repeatedly chromosome-size #(inc (rand-int max-number-bytes))))
+(defn create-initial-population-optimised
+  [population-size, chromosome-size]
+  (let [max-number-of-bytes (get-max-number-of-bytes chromosome-size)]
+    (loop [i 0
+           population ()]
+      (if (< i population-size)
+        (recur (inc i) (conj population (generate-chromosome-optimised chromosome-size max-number-of-bytes)))
+        population))))
 
 ;;The next step is to calculate the adaptation measure.
 ;; It is obtained by calculating the fitness function for each individual,
@@ -80,6 +91,7 @@
     (if (every? #(<= (val %) (Math/pow 2 (key %))) freq)
       (reduce + (map * individual (vec (map second letters))))
       0)))
+
 
 (defn survival
   [population letters]
@@ -228,28 +240,39 @@
   (let [chromosome-size (count letters)
         initial-population (create-initial-population initial-population-size chromosome-size)
         survival-population (survival initial-population letters)]
-    ;(println "Initial population size: " initial-population-size)
-    ;(println "Survived population size: " (count survival-population))
-    ;(println "Percentage of survivors: " (/ (* (count survival-population) 100) initial-population-size) "%")
-    ;(println "-----------------------------")
+    (println "Initial population size: " initial-population-size)
+    (println "Survived population size: " (count survival-population))
+    (println "Percentage of survivors: " (/ (* (count survival-population) 100) initial-population-size) "%")
+    (println "-----------------------------")
     (loop [iteration 1
            global-best Integer/MAX_VALUE
            population survival-population]
       (if (<= iteration number-of-generations)
         (let [current-best (calculate-population-fitness population letters)]
-          ;(println "Generation: " iteration)
-          ;(println "Global best fitness: " global-best)
-          ;(println "Current best fitness: "current-best)
-          ;(println "****")
+          (println "Generation: " iteration)
+          (println "Global best fitness: " global-best)
+          (println "Current best fitness: "current-best)
+          (println "Generation size: " (count population))
+          (println "****")
           (let [parents (roulette-wheel-selection 100 population letters)
                 children (reproduce-children parents chromosome-size)
                 survival-children (survival children letters)
                 new-population (merge-parent-and-children population survival-children)]
-            ;(println "Number of children: " (count children))
-            ;(println "Number of survived children: " (count survival-children))
-            ;(println "----------------\n")
+            (println "Number of children: " (count children))
+            (println "Number of survived children: " (count survival-children))
+            (println "----------------\n")
             (if (<= current-best global-best)
               (recur (inc iteration) current-best new-population)
               (recur (inc iteration) global-best  new-population)))
           )
         global-best))))
+
+(defn create-new-generation
+  [population letters]
+  (merge-parent-and-children population
+                             (survival (reproduce-children
+                                         (roulette-wheel-selection 100 population letters)
+                                         (count letters)) letters)))
+
+(defn ga-optimized
+  [initial-population-size number-of-generations letters])
