@@ -6,6 +6,7 @@
   :dependencies [[org.clojure/clojure "1.11.1"],
                  [org.clojure/math.combinatorics "0.2.0"]
                  [criterium "0.4.6"]
-                 [midje "1.10.9"]]
+                 [midje "1.10.9"]
+                 [prismatic/hiphip "0.2.1"]]
   :plugins [[lein-midje "3.2.1"]]
   :repl-options {:init-ns character-coding.core})

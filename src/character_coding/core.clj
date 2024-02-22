@@ -14,23 +14,24 @@
               ['H' 4]
               ['I' 2]
               ['J' 2]
-              ['K' 7]
-              ['L' 4]
-              ['M' 2]
-              ['N' 1]
-              ['O' 3]
-              ['P' 3]
-              ['Q' 4]
-              ['R' 2]
-              ['T' 1]
-              ['S' 5]])
+              ;['K' 7]
+              ;['L' 4]
+              ;['M' 2]
+              ;['N' 1]
+              ;['O' 3]
+              ;['P' 3]
+              ;['Q' 4]
+              ;['R' 2]
+              ;['T' 1]
+              ;['S' 5]
+              ])
 
 (defn brute-force []
   (let [comb (brute-force/generate-all-comb letters)]
     (brute-force/calculate-optimal-individual comb letters)))
 
 (defn genetic-alg []
-  (genetic-alg/calculate-optimal-individual-genetic 100 100 letters))
+  (genetic-alg/genetic-algorithm 10000 1000 100 0.2 letters))
 
 (def population (genetic-alg/create-initial-population 10000 (count letters)))
 (def s-population (genetic-alg/survival population letters))
