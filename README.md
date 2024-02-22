@@ -10,9 +10,9 @@ During the course, I became interested in algorithms and data structures, explor
 The problem of optimal alphabet coding involves finding the most efficient way to encode a given alpabet(array of characters), tipically with the goal of minimizing the total length of the encoded message. This is particulary important in field such as data compression, where reducing the size of memory or stored data is crucial.
 
 In this context, the problem entails determining the optimal mapping between symbols in the alphabet and their corresponding binary representations. This mapping should ideally proritize frequently occurring symbols with shorter codes, while ensuring that the codes for diiferent symbols are uniquely decodable.
-*We are given an alpabet of ***N*** characters and the probabilities ***p(i)*** that a randomly chosen character is character i. Let ***l(i)*** is length of the encoding of character i. The objective is to minimize the expected length of message
-
-One of the typical ways to solve this problem is using dynamic programming and optimal tree search. Early algorithms, dating back to the 1960s, utilized optimal tree search techniques, with complexities of *O(n^3)* and *O(n^2)*. The most well-known algorithm addressing this problem is **Huffman coding**, which has a complexity of *O(nlogn)*
+*We are given an alpabet of ***N*** characters and the probabilities ***\(p_i\)*** that a randomly chosen character is character i. Let ***\(l_i\)*** is length of the encoding of character i. The objective is to minimize the expected length of message
+                                          \( \sum_{i=1}^{N} \pi \cdot li \)
+One of the typical ways to solve this problem is using dynamic programming and optimal tree search. Early algorithms, dating back to the 1960s, utilized optimal tree search techniques, with complexities of *\(O(n^3)\)* and *\(O(n^2)\)*. The most well-known algorithm addressing this problem is **Huffman coding**, which has a complexity of *O(nlogn)*
 
 |Character|Frequency|Code |
 |---------|---------|-----|
