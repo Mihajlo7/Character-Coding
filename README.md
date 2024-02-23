@@ -72,3 +72,23 @@ In a genetic algorithm, it is crucial to properly encode the solution space, whi
 ```clojure
 (create-initial-population-optimised population-size chromosome-length)
 ```
+
+### Defining the fitness function
+
+
+The ***fitness function*** represents a measure of how good a solution is. In this example, the fitness function is obtained by summing the products of the character frequencies and the number of bits used for encoding.
+```math
+ f(x)=\sum_{i=1}^{L} (p_i \cdot c_i)
+```
+where *L* is the number of characters, **$`p_i`$** is the frequency of character i and **$`c_i`$** is the number of bits used to encode character i.
+
+
+However, there is a constraint to consider when calculating the fitness function. During the computation of the fitness function, we need to consider the number of distinct genes. For example, if a gene has a value of 1, it means that the character is encoded with a single binary digit, 0 or 1. Due to this characteristic of binary encoding, one chromosome cannot have more than 2 genes with a value of 1. From this property of binary encoding, we can derive a constraint for the fitness function
+```math
+\text{count}(g) \leq 2^{g} 
+```
+where **g** is value og single gene.
+If the constraint is not met, the chromosome is considered invalid, and the individual is discarded from the population
+```clojure
+(survival population letters)
+```
