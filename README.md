@@ -78,7 +78,7 @@ In a genetic algorithm, it is crucial to properly encode the solution space, whi
 
 The ***fitness function*** represents a measure of how good a solution is. In this example, the fitness function is obtained by summing the products of the character frequencies and the number of bits used for encoding.
 ```math
- f(x)=\sum_{i=1}^{L} (p_i \cdot c_i)
+ f(x)=min\sum_{i=1}^{L} (p_i \cdot c_i)
 ```
 where *L* is the number of characters, **$`p_i`$** is the frequency of character i and **$`c_i`$** is the number of bits used to encode character i.
 
@@ -91,4 +91,27 @@ where **g** is value og single gene.
 If the constraint is not met, the chromosome is considered invalid, and the individual is discarded from the population
 ```clojure
 (survival population letters)
+```
+
+### Parent Selection
+
+The next step in the genetic algorithm is the selection of parents who will create new individuals. In Darwinian theory, individuals that are more fit are more likely to produce offspring because they live longer. In the context of genetic algorithms, individuals with better fitness functions have a higher chance of participating in reproduction. In the following text, three methods of parent selection will be described.
+#### Roulette wheel selection
+
+Chromosomes are assigned a certain portion of the roulette wheel. Chromosomes with better fitness functions will have a larger portion of the wheel, and therefore a higher chance of being selected when the wheel is spun. Chromosomes with poorer fitness functions will have a lower probability of being chosen. For each individual, the probability is calculated based on its fitness function and the fitness function of the entire population. Then, the size of the resulting portion of the roulette wheel is calculated based on cumulative probabilities.
+
+```clojure
+(roulette-wheel-selection-optimised num-of-selection population letters)
+```
+#### Elitist selection
+
+The elitist selection theory in genetic algorithms involves preserving the best individuals (those with the highest fitness) from one generation to the next. These top-perfoming individuals are directly took part into reproducing next generation
+```clojure
+(ranking-selection num-of-selection population)
+```
+#### Tournament selection
+
+In tournament selection, individuals compete against each other. A randomly selected number of individuals is chosen from the population. The randomly selected individuals are then grouped, and the winners of each group will participate in further reproduction.
+```clojure
+(tournament-selection (select-n-individual-optimised population num-of-selection) letters k)
 ```
