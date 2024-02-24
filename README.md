@@ -115,3 +115,63 @@ In tournament selection, individuals compete against each other. A randomly sele
 ```clojure
 (tournament-selection (select-n-individual-optimised population num-of-selection) letters k)
 ```
+### Reproduction
+
+Reproduction is the process by which selected individuals from the population are used to create new offspring for the next generation. In genetic algorithms, reproduction involves combining genetic material from the selected parents to create new solutions. This process typically includes crossover and mutation.
+#### Two point crossover
+
+Randomly selecting two points in the chromosome structure, and then, depending on how the parent sequences are exchanged, a children individual is created. The descendant consists of the first part of the first parent, the second part of the second parent, and the third part of the first parent.
+
+| $${\color{red}1}$$ | $${\color{red}3}$$ | $${\color{red}2}$$ | $${\color{red}1}$$ | $${\color{red}4}$$ | 
+|---|---|---|---|---|
+
+| $${\color{blue}2}$$ | $${\color{blue}2}$$ | $${\color{blue}2}$$ | $${\color{blue}4}$$ | $${\color{blue}4}$$ |
+|---|---|---|---|---|
+
+----------------------------------------------
+
+| $${\color{red}1}$$ | $${\color{blue}2}$$ | $${\color{blue}2}$$ | $${\color{red}1}$$ | $${\color{red}4}$$ | 
+|---|---|---|---|---|
+
+| $${\color{blue}2}$$ | $${\color{red}3}$$ | $${\color{red}2}$$ | $${\color{blue}4}$$ | $${\color{blue}4}$$ |
+|---|---|---|---|---|
+
+#### Two point crossover
+
+Mutation involves rotating 2 genes (randomly selected) in one chromosome.
+
+| $${\color{red}1}$$ | $${\color{green}3}$$ | $${\color{red}2}$$ | $${\color{green}1}$$ | $${\color{red}4}$$ | 
+|---|---|---|---|---|
+
+---------------------------------------
+
+| $${\color{red}1}$$ | $${\color{green}1}$$ | $${\color{red}2}$$ | $${\color{green}3}$$ | $${\color{red}4}$$ | 
+|---|---|---|---|---|
+
+### Filling the next generation
+In the next generation, the offspring that survived and the rest of the population enter. This way, the size of the population increases from generation to generation, increasing diversity and the chance of reaching the globally optimal solution.
+```clojure
+(tournament-new-generation population letters mutation-rate num-of-selection k)
+```
+
+## Testing and perfomance measurement
+For testing the program, the Clojure library *Midje* was used. For measuring the performance of the software functionality, the *Criterium* library was used.
+The performance measurement was conducted on a machine with the following specifications:
+| Component       | Specification             |
+|-----------------|---------------------------|
+| Processor       | Intel Core i5- 13th 1335u |
+| RAM             | 16 GB DDR4                |
+| OS              | Windows 10                |
+
+## Algorithms testing
+
+In this section, the performance of the ***genetic algorithm*** will be presented. To draw conclusions from this study, the genetic algorithm will be compared with the ***brute force algorithm***.
+
+Input string: ```ARTIFICIAL INTELIGENCE```
+
+Table with characters and their frequences:
+
+| A | R | T | I | F | C | I | N | E | SPACE |
+|---|---|---|---|---|---|---|---|---|-------|
+| 2 | 2 | 2 | 4 | 1 | 1 | 1 | 2 | 2 |   1   |
+
