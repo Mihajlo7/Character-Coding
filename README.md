@@ -136,7 +136,7 @@ Randomly selecting two points in the chromosome structure, and then, depending o
 | $${\color{blue}2}$$ | $${\color{red}3}$$ | $${\color{red}2}$$ | $${\color{blue}4}$$ | $${\color{blue}4}$$ |
 |---|---|---|---|---|
 
-#### Two point crossover
+#### Two point mutation
 
 Mutation involves rotating 2 genes (randomly selected) in one chromosome.
 
@@ -281,3 +281,76 @@ Through testing of the genetic algorithm, it was concluded that the genetic algo
 
 > [!NOTE]
 >To demonstrate the complexity of the problem and the vast search space, when writing this part of the text and testing and calculating the algorithm results, I used "ARTIFICIAL INTELLIGENCE" as the input text. However, the brute force algorithm could not compute it because for 11 characters, the algorithm required 11! = 39,916,800 different permutations, which could not be calculated due to memory limitations. When excluding the space character, the number of permutations decreases to 10!=3,628,800 and yet, the algorithm was able to find the best solution. The size of the solution search space drastically increases with the increase in the number of characters.
+
+## Comparison of Solutions
+In this section of the text, a comparison will be made between the genetic algorithm and other algorithms that solve this problem. For these algorithms, the **brute force algorithm** and the **Huffman coding** algorithm, which solve the problem of optimal alphabet coding, have been selected. The algorithms will be compared along three dimensions: *simplicity*, *execution time*, and *quality of the solution*
+
+
+The only dimension in which the brute force algorithm will be compared is simplicity because its implementation is quite straightforward. This algorithm finds all possible combinations and calculates the best one. In the rest of the text, the genetic algorithm and Huffman coding will be compared. Regarding finding the best solution, theoretically, the genetic algorithm can find a better solution than Huffman coding because of the way the encoding scheme is set up in the genetic algorithm and the representation of encoding using a tree in Huffman coding. However, the implementation of the genetic algorithm is not straightforward; it requires a good understanding of the problem and careful selection of how to create new generations, while Huffman coding involves breadth-first traversal of the tree, making its implementation simpler. As for execution time and the number of iterations required to find the best solution, the genetic algorithm is constant, requiring a maximum of 1,000,000 operations, while the complexity of Huffman coding is O(n log n). For example, for 30 characters, it would require 30 log 30~44 operations.
+
+If we look at the bigger picture, we can say that Huffman coding is a solution that is more applicable to this problem and something that has been around for a long time and is unlikely to be surpassed. However, I found it interesting to study artificial intelligence algorithms, especially learning about genetic algorithms. Therefore, I chose to use the genetic algorithm for the implementation of this solution.
+
+|               | Brute force    | Genetic algorithm    | Huffman coding    |
+|---------------|----------------|----------------------|-------------------|
+| Simplicity    | very simple     | complex       | simple    |
+| Execution time| very bad    | good  | best  |
+| Qualty of solution    | good     | best       | good    |
+
+## Challanges
+
+While working on this project, I encountered many challenges and learned a lot from them.
+
+In the initial version of the algorithm, roulette wheel selection was used, and with an initial population of 1000 individuals and 1000 generations, it took over 2 hours to execute. This algorithm was slower than the brute force algorithm, which executed in about 7 seconds. After detailed measurement of all functions, it was found that the parent selection with the roulette wheel took the most time.
+```
+(quick-bench (genetic-alg/roulette-wheel-selection 100 s-population letters))
+Evaluation count : 6 in 6 samples of 1 calls.
+             Execution time mean : 2,167718 sec
+    Execution time std-deviation : 236,465343 ms
+   Execution time lower quantile : 1,836094 sec ( 2,5%)
+   Execution time upper quantile : 2,439353 sec (97,5%)
+                   Overhead used : 5,831894 ns
+```
+It was observed that there were more passes through the array (population) than necessary. Additionally, since it was necessary to iterate through the population and return the individual that satisfies the condition, the search method was changed from an algorithm with O(n) complexity to binary search with O(log n) complexity because it needed to search through sorted cumulative probabilities. This change significantly sped up the algorithm.
+```
+Evaluation count : 30 in 6 samples of 5 calls.
+             Execution time mean : 25,545321 ms
+    Execution time std-deviation : 1,812911 ms
+   Execution time lower quantile : 23,278195 ms ( 2,5%)
+   Execution time upper quantile : 27,775337 ms (97,5%)
+                   Overhead used : 5,575167 ns
+```
+However, after executing 50 generations, the algorithm significantly slowed down, and upon retesting, it was observed that the computational complexity increased significantly from generation to generation. Therefore, it was necessary to limit the number of individuals going into the next generation to the top 1000. This resulted in the algorithm running faster, taking about 20 seconds, which was still more than brute force, but the solutions were far from optimal.
+
+
+After this, I tried using elitist selection instead of roulette wheel selection. When the algorithm was executed with the same initial population and number of generations, it ran slightly faster than roulette wheel selection (around 17 seconds). However, the solutions varied considerably. In 50% of cases, the algorithm returned the best solution, but in the other 50%, it did not. This stemmed from the fact that elitist selection only selects the best solution from one generation, thus reducing the diversity of the population significantly. This increases the likelihood of the algorithm getting stuck in a local optimum without ever finding the global best solution.
+
+As a compromise, I applied tournament selection. Through the implementation of this solution, I noticed two things that consumed the most resources. The first was the significant resource demand during summation and calculation of the fitness function. Through testing, I found that the reduce function was sometimes up to 1000 times slower than map for the same number of elements. Due to this fact, my goal was to create an algorithm whose complexity would not increase from generation to generation. The second issue was inefficient copying of the population in the loop. Every time a new iteration was started in the loop, the algorithm repeatedly copied a large number of elements in the array. In the end, I managed to minimize calculations in one generation by calculating the best solution at the beginning of the algorithm and comparing it with the offspring of the generation, rather than calculating the best solution for the entire population across generations. This way, I achieved constant computation throughout the generations (for example, there will always be around 100 offspring in one generation). The results were excellent. The entire algorithm executed in just over 5 seconds for any volume of solutions, and the solutions themselves were quite good. The acceleration achieved between the first and last solution was close to 1000 times.
+```
+Evaluation count : 552 in 6 samples of 92 calls.
+             Execution time mean : 1,177124 ms
+    Execution time std-deviation : 66,104956 µs
+   Execution time lower quantile : 1,093598 ms ( 2,5%)
+   Execution time upper quantile : 1,235840 ms (97,5%)
+                   Overhead used : 5,572849 ns
+```
+It is also important to note that the number of individuals in the population increased throughout the generations; it was not constant as before. This allowed for greater diversity in the population and a larger search space for solutions
+
+
+Another significant optimization was in the function for creating the initial population. Its acceleration resulted from changing the data structure from an array to a list. A list is a data structure that performs better when adding elements compared to an array because the complexity of adding an element to a list is O(1), while the complexity of adding a new element to an array is O(n).
+```
+Evaluation count : 30 in 6 samples of 5 calls.
+             Execution time mean : 27,657395 ms
+    Execution time std-deviation : 3,679429 ms
+   Execution time lower quantile : 23,852875 ms ( 2,5%)
+   Execution time upper quantile : 32,359517 ms (97,5%)
+                   Overhead used : 5,572849 ns
+```
+***Optimised***
+```
+Evaluation count : 2952 in 6 samples of 492 calls.
+             Execution time mean : 269,947003 µs
+    Execution time std-deviation : 64,257075 µs
+   Execution time lower quantile : 209,661299 µs ( 2,5%)
+   Execution time upper quantile : 360,288865 µs (97,5%)
+                   Overhead used : 5,572849 ns
+```
