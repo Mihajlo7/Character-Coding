@@ -1,4 +1,6 @@
 # Optimal alphabet encoding
+![Clojure](https://img.shields.io/badge/Clojure-%23Clojure.svg?style=for-the-badge&logo=Clojure&logoColor=Clojure)
+![IntelliJ IDEA](https://img.shields.io/badge/IntelliJIDEA-000000.svg?style=for-the-badge&logo=intellij-idea&logoColor=white)
 ## Overview
 This paper is the result of several months of work and research conducted for the purpose of completing the course Alati i metode softverskog inzenjerstva i vestacke inteligencije in the master's studies at the Faculty of Organizational Sciences, in the Software Engineering study program.
 
@@ -355,3 +357,5 @@ Evaluation count : 2952 in 6 samples of 492 calls.
                    Overhead used : 5,572849 ns
 ```
 ## Conclusion
+
+During this project, I learned a lot about algorithms and data structures. I became familiar with artificial intelligence algorithms and dynamic programming algorithms, understanding how some of them solve problems. I learned to recognize the scope of algorithms that solve a particular problem. I also encountered new technology, such as Clojure. Through this project, I realized the speed at which Clojure can execute. One way to further improve this project is by using primitives, which would further speed up the program. Initially, I found it challenging to write programs in the functional paradigm, but after several months of work, I became quite comfortable with this programming approach. After this project, I will continue to improve my skills by studying and optimizing algorithms in software architecture.
