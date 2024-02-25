@@ -64,24 +64,13 @@
   "Generate a sequence of size n containing random numbers from 1 to the maximum number
   represented by the number of bits used to represent the value"
   [chromosome-size max-number-bytes]
-  (vec (repeatedly chromosome-size #(inc (rand-int max-number-bytes)))))
-
-(defn gen-chromosome
-  [chromosome-size max-number-bytes]
   (into [] (repeatedly chromosome-size #(inc (rand-int max-number-bytes)))))
 
-(defn c-population
-  [size chromosome]
-  (let [max (get-max-number-of-bytes chromosome)
-        population (atom [])]
-    (dotimes [i size]
-      (swap! population conj (gen-chromosome chromosome max)))
-    @population))
 (defn create-initial-population
   "Create population of n size which contains n chromosomes"
   [population-size, chromosome-size]
   (let [max-number-of-bytes (get-max-number-of-bytes chromosome-size)]
-    (into [] (repeatedly population-size (fn [] (gen-chromosome chromosome-size max-number-of-bytes))))))
+    (into [] (repeatedly population-size (fn [] (generate-chromosome chromosome-size max-number-of-bytes))))))
 
 ;----- Optimized function------
 (defn generate-chromosome-optimised
@@ -200,41 +189,6 @@
     (if (< i size)
       (recur (inc i) (+ result (calculate-fitness (nth population i) letters)))
       result)))
-(defn sum-of-fitness-2
-  [population letters ]
-  (reduce (fn [res ind]
-            (+ res (calculate-fitness ind letters))) 0 population))
-(defn sum-of-fitness-3
-  [population letters]
-  (let [a (map #(calculate-fitness % letters) population)
-        array  (double-array a )]
-    (areduce ^doubles array i result (double 0.0) (+ result (aget  ^doubles array i)))))
-(defn fitness-array
-  [population letters]
-  (let [total (sum-of-fitness-2 population letters )]
-    (reduce (fn [res ind] (conj res (/ (double (calculate-fitness ind letters)) total) )) [] population)))
-
-
-(defn cumulative-array
-  [fitness-array]
-  (reductions + fitness-array))
-
-(defn binary-search-opt
-  [number cumulative-values ]
-  (if (<= number (nth cumulative-values 0))
-    0
-    (loop [low 0
-           high (dec (count cumulative-values))]
-      (if (<= low high)
-        (let [mid (quot (+ low high) 2)
-              mid-value (nth cumulative-values mid)]
-          (if (<= number mid-value)
-            (if (> number (nth cumulative-values (dec mid)))
-              mid
-              (recur low (- mid 1)))
-            (recur (+ mid 1) high)))
-        low))))
-
 (defn cumulative-values-optimised
   "Optimised calculates the cumulative probability for all individuals"
   [population letters]
@@ -251,8 +205,6 @@
                    (conj! result
                          (conj individual (last (nth result (dec i))) (+ probability (last (nth result (dec i)))))))))
         (persistent! result)))))
-
-
 
 (defn binary-search-selection
   "Implementation algorithm for binary search of array"
@@ -282,19 +234,15 @@
                (rand))
         result))))
 
+;-------------------
 ;; Ranking selection
+;-------------------
 (defn ranking-selection
   [number-of-selection population]
   (take number-of-selection population))
-
+;;-----------------------
 ;; Tournament selection
-
-(defn select-n-individual
-  [population letters n]
-  (let [result (transient [])]
-    (dotimes [i n]
-      (conj! result (rand-nth population)))
-    (persistent! result)))
+;----------------------
 
 (defn calculate-population-fitness
   "Returns the best value of the fitness function for the entire population and the individual
@@ -430,6 +378,7 @@
                                              chromosome-length) chromosome-length mutation-rate) letters))))
 
 (defn tournament-new-generation
+  "Function creates children with tournament selection of parents"
   [population letters mutation-rate num-of-selection k]
   (let [chromosome-length (count letters)]
     (survival (mutate
@@ -438,6 +387,9 @@
                   chromosome-length) chromosome-length mutation-rate) letters)))
 
 (defn genetic-algorithm-optimised
+  "The function initiates a genetic algorithm and finds the best individual based on the initial population size,
+  the number of generations, the number of parent selections, number of groups, the mutation rate,
+  and the characters along with their frequencies"
   [population-size number-of-generation num-of-selection k mutation-rate letters]
   (let [chromosome-size (count letters)
         initial-population (create-initial-population-optimised population-size chromosome-size)
