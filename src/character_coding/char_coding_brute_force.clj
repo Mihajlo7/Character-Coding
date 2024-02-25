@@ -55,5 +55,11 @@
           (recur (inc iteration) best-individual best-memory-size))
         )best-individual)))
 
+(defn brute-force-algorithm
+  [letters]
+  (let [combinations (generate-all-comb letters)]
+    (let [best-individual (calculate-optimal-individual combinations letters)]
+      [(calculate-individual-fitness best-individual letters) best-individual])))
+
 
 

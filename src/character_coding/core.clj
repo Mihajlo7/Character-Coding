@@ -4,40 +4,18 @@
             [criterium.core :refer :all]))
 
 
-(def letters [['A' 5]
-              ['B' 1]
-              ['C' 6]
-              ['D' 3]
-              ['E' 2]
-              ['F' 1]
-              ['G' 4]
-              ['H' 4]
-              ['I' 2]
-              ['J' 2]
-              ;['K' 7]
-              ;['L' 4]
-              ;['M' 2]
-              ;['N' 1]
-              ;['O' 3]
-              ;['P' 3]
-              ;['Q' 4]
-              ;['R' 2]
-              ;['T' 1]
-              ;['S' 5]
-              ])
+(defn text-to-array [text]
+  (into [] (frequencies text)))
 
-(defn brute-force []
-  (let [comb (brute-force/generate-all-comb letters)]
-    (brute-force/calculate-optimal-individual comb letters)))
 
-(defn genetic-alg []
-  (genetic-alg/genetic-algorithm 10000 1000 100 0.2 letters))
 
-(def population (genetic-alg/create-initial-population 10000 (count letters)))
-(def s-population (genetic-alg/survival population letters))
-(def parent (genetic-alg/roulette-wheel-selection 100 s-population letters))
-(def children (genetic-alg/reproduce-children parent (count letters)))
-(def s-children (genetic-alg/survival children letters))
+
+
+;(def population (genetic-alg/create-initial-population 10000 (count letters)))
+;(def s-population (genetic-alg/survival population letters))
+;(def parent (genetic-alg/roulette-wheel-selection 100 s-population letters))
+;(def children (genetic-alg/reproduce-children parent (count letters)))
+;(def s-children (genetic-alg/survival children letters))
 ;;; MEASURES
 ;; Creating initial population
 ;;-----------------------------

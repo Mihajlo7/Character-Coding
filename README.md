@@ -47,7 +47,7 @@ We will take, for example, the following sequence as the input parameter into th
 <p align="center"><font size="8">ABBCAADBABBEE</font></p>
 
 Now, a table is created containing all distinct characters along with their occurrences in the sequence or text.
-  
+
 |Character|Frequency|
 |---------|---------|
 |    A    |    4    |
@@ -157,6 +157,7 @@ In the next generation, the offspring that survived and the rest of the populati
 ## Testing and perfomance measurement
 For testing the program, the Clojure library *Midje* was used. For measuring the performance of the software functionality, the *Criterium* library was used.
 The performance measurement was conducted on a machine with the following specifications:
+
 | Component       | Specification             |
 |-----------------|---------------------------|
 | Processor       | Intel Core i5- 13th 1335u |
@@ -167,11 +168,116 @@ The performance measurement was conducted on a machine with the following specif
 
 In this section, the performance of the ***genetic algorithm*** will be presented. To draw conclusions from this study, the genetic algorithm will be compared with the ***brute force algorithm***.
 
-Input string: ```ARTIFICIAL INTELIGENCE```
+Input string: ```ARTIFICIALINTELLIGENCE```
 
 Table with characters and their frequences:
 
-| A | R | T | I | F | C | I | N | E | SPACE |
-|---|---|---|---|---|---|---|---|---|-------|
-| 2 | 2 | 2 | 4 | 1 | 1 | 1 | 2 | 2 |   1   |
+| A | C | E | F | G | I | L | N | R | T |
+|---|---|---|---|---|---|---|---|---|---|
+| 2 | 2 | 3 | 1 | 1 | 5 | 3 | 2 | 1 | 2 |
 
+### Brute force
+```clojure
+(brute-force-algorithm letters)
+```
+**Result:**
+```
+*Memory*: 47 bytes
+
+*Code*: 7 6 3 9 8 1 0 5 4 2
+```
+**Measurement**
+```
+Evaluation count : 6 in 6 samples of 1 calls.
+             Execution time mean : 7,420299 sec
+    Execution time std-deviation : 148,296756 ms
+   Execution time lower quantile : 7,268530 sec ( 2,5%)
+   Execution time upper quantile : 7,629807 sec (97,5%)
+                   Overhead used : 5,610601 ns
+```
+|  A  |  C  | E  |  F   |  G   | I | L |  N  |  R  | T  |
+|-----|-----|----|------|------|---|---|-----|-----|----|
+| 111 | 110 | 11 | 1001 | 1000 | 1 | 0 | 101 | 100 | 10 |
+
+### Genetic algorithm
+```clojure
+(genetic-algorithm-optimised 1000 1000 100 10 0.2 letters)
+```
+**Result**
+```
+*Memory* 41 bytes
+
+*Code* 2 2 1 3 3 1 2 2 3 3
+```
+**Measurement**
+```
+Evaluation count : 6 in 6 samples of 1 calls.
+             Execution time mean : 5,486237 sec
+    Execution time std-deviation : 306,953422 ms
+   Execution time lower quantile : 4,977574 sec ( 2,5%)
+   Execution time upper quantile : 5,796740 sec (97,5%)
+                   Overhead used : 5,610601 ns
+```
+
+| A  | C  | E | F   |  G  | I | L  | N  |  R  |  T  |
+|----|----|---|-----|-----|---|----|----|-----|-----|
+| 00 | 01 | 0 | 000 | 001 | 1 | 10 | 11 | 010 | 011 |
+
+The genetic algorithm achieves slightly better solutions compared to brute force due to the way the fitness function is defined and its constraints. The execution time of both algorithms is similar, with the genetic algorithm being shorter by 2 seconds compared to brute force.
+
+However, if we attempt with a more complex input such as:
+```
+I love artificial intelligence and software engineering. Clojure is functional programming language.
+```
+This text contains 23 distinct characters.
+If we run brute force algorithm with this input, we get the following result
+```
+Execution error (OutOfMemoryError) at clojure.math.combinatorics/vec-lex-permutations (combinatorics.cljc:274).
+Java heap space
+```
+
+The problem that the algorithm is solving has become too complex, and it is impossible to solve it using brute force. 
+If we attempt to solve it with a genetic algorithm, we got the following result
+
+```clojure
+(genetic-algorithm-optimised 10000 1000 100 10 0.2 letters)
+```
+
+```
+Memory: 235 bytes
+Code: 1 2 4 3 4 2 3 3 4 1 5 2 3 4 2 3 4 3 4 3 3 4 4
+```
+Execution time measurements
+```
+Evaluation count : 6 in 6 samples of 1 calls.
+             Execution time mean : 5,800259 sec
+    Execution time std-deviation : 312,372675 ms
+   Execution time lower quantile : 5,374201 sec ( 2,5%)
+   Execution time upper quantile : 6,047242 sec (97,5%)
+                   Overhead used : 5,610601 ns
+```
+
+
+The execution time has slightly increased despite a significant increase in the program's complexity. After running the algorithm multiple times, the optimal solution was consistently obtained.
+
+The result of optimal alphabet coding is the use of less memory to represent a sequence of characters or letters.
+
+|               | Without coding | Brute force    | Genetic algorithm |
+|---------------|----------------|----------------|-------------------|
+| 10 characters | 22*8=176 b     | 47+ 10*8=127 b | 41+ 10*8=127 b    |
+| 23 characters | 100*8=800 b    | Out of memory  | 235+ 23*8= 419 b  |
+
+### Summary
+
+| n=10       | Brute force | Genetic algorithm |
+|------------|------------|-------------------|
+| Complexity | $`n!`$     | 10,000 - 1,000,000 |
+| Accuracy   | 100%       | 100%              |
+| Time       | ~7 s       | ~ 5 s             |
+| Best result| 47         | 41                |
+
+
+Through testing of the genetic algorithm, it was concluded that the genetic algorithm does not always provide the best solution, but it does provide a sufficiently good solution within an acceptable time running considering the complexity of the problem.
+
+> [!NOTE]
+>To demonstrate the complexity of the problem and the vast search space, when writing this part of the text and testing and calculating the algorithm results, I used "ARTIFICIAL INTELLIGENCE" as the input text. However, the brute force algorithm could not compute it because for 11 characters, the algorithm required 11! = 39,916,800 different permutations, which could not be calculated due to memory limitations. When excluding the space character, the number of permutations decreases to 10!=3,628,800 and yet, the algorithm was able to find the best solution. The size of the solution search space drastically increases with the increase in the number of characters.
