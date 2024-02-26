@@ -59,7 +59,9 @@
   [letters]
   (let [combinations (generate-all-comb letters)]
     (let [best-individual (calculate-optimal-individual combinations letters)]
-      [(calculate-individual-fitness best-individual letters) best-individual])))
+      ;[(calculate-individual-fitness best-individual letters) best-individual]
+      {:memory (calculate-individual-fitness best-individual letters)
+       :individual best-individual})))
 
 
 

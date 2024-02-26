@@ -3,13 +3,55 @@
             [character-coding.char-coding-genetic-alg :as genetic-alg]
             [criterium.core :refer :all]))
 
+(def letters [['A' 5]
+              ['B' 1]
+              ['C' 6]
+              ['D' 3]])
 
-(defn text-to-array [text]
+(defn text-to-array
+  "Converting input text to array of characters and their freq"
+  [text]
   (into [] (frequencies text)))
 
+(defn create-binary-combinations
+  "Creating random k binary codes of n bites "
+  [n k]
+  (if (<= k (Math/pow 2 n))
+    (take k (for [i (range (Math/pow 2 n))]
+              (apply str (reverse (map #(if (zero? (bit-and i (bit-shift-left 1 %))) "0" "1") (range n))))))
+    (throw (IllegalArgumentException. "Invalid input!"))))
+(defn create-binary-map
+  "Creating binary codes for individuals"
+  [individual]
+  (let [counts (frequencies individual)]
+    (reduce (fn [acc [num count]]
+              (assoc acc num (create-binary-combinations num count)))
+            {}
+            counts)))
 
+(defn remove-first-binary
+  "Removing first element from binary group and returns rest of elements"
+  [binary-map n]
+  (update-in binary-map [n] rest))
 
+(defn genetic-algorithm-code
+  "Returns binary codes for genetic algorithm based on best individual and letters"
+  [letters individual]
+  (let [size (count letters)]
+    (loop [i 0
+           result {}
+           binary-codes (create-binary-map individual)]
+      (if (< i size)
+        (recur (inc i)
+               ;(conj result (conj [] (first (get letters i)) (first (get binary-codes (get individual i))) ))
+               (assoc result (first (get letters i)) (first (get binary-codes (get individual i))))
+               (remove-first-binary binary-codes (get individual i)))
+        result))))
 
+(defn brute-force-code
+  "Returns binary codes for brute force algorithm based on best individual and letters"
+  [letters individual]
+  (zipmap (into [] (map first letters)) (map #(Integer/toBinaryString %) individual)))
 
 ;(def population (genetic-alg/create-initial-population 10000 (count letters)))
 ;(def s-population (genetic-alg/survival population letters))
