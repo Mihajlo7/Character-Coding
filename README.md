@@ -17,13 +17,19 @@ In this context, the problem entails determining the optimal mapping between sym
  \sum_{i=1}^{N} (p_i \cdot l_i) 
 ```
 One of the typical ways to solve this problem is using dynamic programming and optimal tree search. Early algorithms, dating back to the 1960s, utilized optimal tree search techniques, with complexities of *O($`n^3`$)* and *O($`n^2`$)*. The most well-known algorithm addressing this problem is **Huffman coding**, which has a complexity of *O(nlogn)*
-
+<div style="display: flex;">
+  <div style="flex: 1;">
+   
 |Character|Frequency|Code |
-|---------|---------|-----|   ![Alt text]()
+|---------|---------|-----| 
 |    A    |    5    |  11 |
-|    B    |    1    | 100 |
+|    B    |    1    | 100 |                                 
 |    C    |    6    |  0  |
 |    D    |    3    | 101 |
+
+   ![Alt Hufffman tree](huffman.PNG)
+  </div>
+</div>
 
 ## Evolutionary algorithm
 
@@ -358,4 +364,4 @@ Evaluation count : 2952 in 6 samples of 492 calls.
 ```
 ## Conclusion
 
-During this project, I learned a lot about algorithms and data structures. I became familiar with artificial intelligence algorithms and dynamic programming algorithms, understanding how some of them solve problems. I learned to recognize the scope of algorithms that solve a particular problem. I also encountered new technology, such as Clojure. Through this project, I realized the speed at which Clojure can execute. One way to further improve this project is by using primitives, which would further speed up the program. Initially, I found it challenging to write programs in the functional paradigm, but after several months of work, I became quite comfortable with this programming approach. After this project, I will continue to improve my skills by studying and optimizing algorithms in software architecture.
+During this project, I learned a lot about algorithms and data structures. I became familiar with artificial intelligence algorithms and dynamic programming algorithms, understanding how some of them solve problems. I learned to recognize the scope of algorithms that solve a particular problem. I also encountered new technology, such as Clojure. Through this project, I realized the speed at which Clojure can execute. One way to further improve this project is by using primitives, which would further speed up the program. Initially, I found it challenging to write programs in the functional paradigm, but after several months of work, I became quite comfortable with this programming approach. After this project, I will continue to improve my skills by studying and optimizing algorithms in software engineering.
