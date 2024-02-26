@@ -19,7 +19,7 @@ In this context, the problem entails determining the optimal mapping between sym
 One of the typical ways to solve this problem is using dynamic programming and optimal tree search. Early algorithms, dating back to the 1960s, utilized optimal tree search techniques, with complexities of *O($`n^3`$)* and *O($`n^2`$)*. The most well-known algorithm addressing this problem is **Huffman coding**, which has a complexity of *O(nlogn)*
 
 |Character|Frequency|Code |
-|---------|---------|-----|
+|---------|---------|-----|   ![Alt text]()
 |    A    |    5    |  11 |
 |    B    |    1    | 100 |
 |    C    |    6    |  0  |
