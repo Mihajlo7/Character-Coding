@@ -3,10 +3,10 @@
             [character-coding.char-coding-genetic-alg :as genetic-alg]
             [criterium.core :refer :all]))
 
-(def letters [['A' 5]
-              ['B' 1]
-              ['C' 6]
-              ['D' 3]])
+;(def letters [['A' 5]
+;              ['B' 1]
+;              ['C' 6]
+;              ['D' 3]])
 
 (defn text-to-array
   "Converting input text to array of characters and their freq"
