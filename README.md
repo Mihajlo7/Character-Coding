@@ -14,7 +14,7 @@ The problem of optimal alphabet coding involves finding the most efficient way t
 In this context, the problem entails determining the optimal mapping between symbols in the alphabet and their corresponding binary representations. This mapping should ideally proritize frequently occurring symbols with shorter codes, while ensuring that the codes for diiferent symbols are uniquely decodable.
 *We are given an alpabet of ***N*** characters and the probabilities **$`p_i`$** that a randomly chosen character is character i. Let **$`l_i`$** is length of the encoding of character i. The objective is to minimize the expected length of message
 ```math
- \sum_{i=1}^{N} (p_i \cdot l_i) 
+ min\sum_{i=1}^{N} (p_i \cdot l_i) 
 ```
 One of the typical ways to solve this problem is using dynamic programming and optimal tree search. Early algorithms, dating back to the 1960s, utilized optimal tree search techniques, with complexities of *O($`n^3`$)* and *O($`n^2`$)*. The most well-known algorithm addressing this problem is **Huffman coding**, which has a complexity of *O(nlogn)*
 <div style="display: flex;">
@@ -190,9 +190,9 @@ Table with characters and their frequences:
 ```
 **Result:**
 ```
-*Memory*: 47 bytes
+Memory: 47 bytes
 
-*Code*: 7 6 3 9 8 1 0 5 4 2
+Code: 7 6 3 9 8 1 0 5 4 2
 ```
 **Measurement**
 ```
