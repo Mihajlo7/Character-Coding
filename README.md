@@ -213,9 +213,9 @@ Evaluation count : 6 in 6 samples of 1 calls.
 ```
 **Result**
 ```
-*Memory* 41 bytes
+Memory: 41 bytes
 
-*Code* 2 2 1 3 3 1 2 2 3 3
+Code: 2 2 1 3 3 1 2 2 3 3
 ```
 **Measurement**
 ```
