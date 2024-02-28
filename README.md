@@ -365,3 +365,16 @@ Evaluation count : 2952 in 6 samples of 492 calls.
 ## Conclusion
 
 During this project, I learned a lot about algorithms and data structures. I became familiar with artificial intelligence algorithms and dynamic programming algorithms, understanding how some of them solve problems. I learned to recognize the scope of algorithms that solve a particular problem. I also encountered new technology, such as Clojure. Through this project, I realized the speed at which Clojure can execute. One way to further improve this project is by using primitives, which would further speed up the program. Initially, I found it challenging to write programs in the functional paradigm, but after several months of work, I became quite comfortable with this programming approach. After this project, I will continue to improve my skills by studying and optimizing algorithms in software engineering.
+## References
+
+- Brown, K. Q. (1979). Dynamic programming in computer science.Google Scholar https://kilthub.cmu.edu/ndownloader/files/12095438
+- Programiz. Huffman Coding. Retrived from https://www.programiz.com/dsa/huffman-coding
+- Higginbotham, D. (2015). Clojure for the Brave and True. No Starch Press.
+- Emmerick, C., Grant, C., Caprer, B. (2011). Clojure Programming. O'Reilly.
+- Hurbans, R. (2020). Artificial Intelligence Algorithms. Grokking.
+- Tutorialspoint. Genetic Algorithms - Parent Selection. Retrieved from https://www.tutorialspoint.com/genetic_algorithms/genetic_algorithms_parent_selection.html
+- Jebari, K., Madiafi, M. (2013). Selection Methods for Genetic Algorithms. https://www.researchgate.net/publication/259461147_Selection_Methods_for_Genetic_Algorithms
+
+The idea for presenting the solution was taken from a book *Grokking Artificial Intelligence Algorithms*. 
+
+The idea for comparing solutions and optimizing them stemmed from reading books: *Introduction to Algorithms* and *Algorithms in a nutshell*.
